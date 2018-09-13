@@ -10,13 +10,18 @@ import (
 
 type hasherJd struct {
 	cache hash.Hash
+	saltHex []byte
+	saltByt []byte
 }
 
 func NewHasherJd() Hasher {
-	return &hasherJd{md5.New()}
+	saltHex, _ := hex.DecodeString(getSaltString())
+	saltBytes := make([]byte, 4)
+	binary.LittleEndian.PutUint32(saltBytes, hexToInt(getSaltString()))
+	return &hasherJd{md5.New(), saltHex, saltBytes }
 }
 
-func createSalt() string {
+func getSaltString() string {
 	return "ce4f5046"
 }
 
@@ -29,14 +34,10 @@ func hexToInt(data string) uint32 {
 }
 
 func (h *hasherJd) Hash(data string) []byte {
-	saltHash := hexToInt(createSalt());
-	saltBytes := make([]byte, 4)
-	binary.LittleEndian.PutUint32(saltBytes, saltHash)
-	s, _ := hex.DecodeString(createSalt())
 	return append(
-		s[:],
+		h.saltHex[:],
 		h.binaryHash(
-		append(saltBytes[:],
+		append(h.saltByt[:],
 			data[:]...))[:]...)
 }
 
