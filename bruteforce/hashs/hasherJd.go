@@ -12,13 +12,16 @@ type hasherJd struct {
 	cache hash.Hash
 	saltHex []byte
 	saltByt []byte
+	saltBytR []byte
 }
 
 func NewHasherJd() Hasher {
 	saltHex, _ := hex.DecodeString(getSaltString())
 	saltBytes := make([]byte, 4)
 	binary.LittleEndian.PutUint32(saltBytes, hexToInt(getSaltString()))
-	return &hasherJd{md5.New(), saltHex, saltBytes }
+	// reverse bytes
+	saltBytR := []byte{saltBytes[3], saltBytes[2],saltBytes[1], saltBytes[0]}
+	return &hasherJd{md5.New(), saltHex, saltBytes, saltBytR }
 }
 
 func getSaltString() string {
