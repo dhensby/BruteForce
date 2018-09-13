@@ -5,9 +5,9 @@ import (
 	"flag"
 	"fmt"
 	"github.com/ngirot/BruteForce/bruteforce"
+	"github.com/ngirot/BruteForce/bruteforce/conf"
 	"github.com/ngirot/BruteForce/bruteforce/hashs"
 	"os"
-	"github.com/ngirot/BruteForce/bruteforce/conf"
 )
 
 func main() {
@@ -41,7 +41,9 @@ func main() {
 
 	if *test {
 		var hasherCreator, _ = hashs.HasherCreator(*hashType)
-		var hash = hex.EncodeToString(hasherCreator().Hash(*value))
+		var hashBytes = hasherCreator().Hash(*value);
+		//fmt.Printf("%d\n", binary.LittleEndian.Uint32(hashBytes))
+		var hash = hex.EncodeToString(hashBytes)
 		fmt.Printf("Hash: %s \nLength: %d\n", hash, len(hash))
 		os.Exit(0)
 	}

@@ -31,7 +31,7 @@ func hexToInt(data string) uint32 {
 func (h *hasherJd) Hash(data string) []byte {
 	saltHash := hexToInt(createSalt());
 	saltBytes := make([]byte, 4)
-	binary.BigEndian.PutUint32(saltBytes, saltHash)
+	binary.LittleEndian.PutUint32(saltBytes, saltHash)
 	s, _ := hex.DecodeString(createSalt())
 	return append(
 		s[:],
@@ -47,7 +47,6 @@ func (h *hasherJd) IsValid(data string) bool {
 
 func (h *hasherJd) binaryHash(data []byte) []byte {
 	h.cache.Reset()
-	h.cache.Write([]byte(h.convert(createSalt())))
 	h.cache.Write([]byte(data))
 	return h.cache.Sum(nil)
 }
