@@ -15,7 +15,7 @@ func main() {
 	var value = flag.String("value", "", "The value to be tested")
 	var alphabet = flag.String("alphabet", "", "The file containing all characters")
 	var dictionary = flag.String("dictionary", "", "The file containing all words to be tested")
-	var hashType = flag.String("type", "sha256", "The hash type")
+	var hashType = flag.String("type", "", "The hash type")
 	var salt = flag.String("salt", "", "The salt added to the end of the generated word")
 	var test = flag.Bool("test", false, "Test value to use")
 	flag.Parse()
@@ -23,6 +23,9 @@ func main() {
 	if *bench {
 		var types = hashs.AllHasherTypes()
 		for _, t := range types {
+			if *hashType != "" && t != *hashType {
+				continue
+			}
 			var hasherCreator, _ = hashs.HasherCreator(t)
 			var timeOneCpu = bruteforce.BenchHasherOneCpu(hasherCreator)
 			fmt.Printf("One CPU (%s) hasher: %d kh/s\n", t, timeOneCpu/1000)
@@ -32,6 +35,10 @@ func main() {
 
 		fmt.Printf("One CPU word generator: %d kw/s\n", bruteforce.BenchBruter()/1000)
 		os.Exit(0)
+	}
+
+	if *hashType == "" {
+		*hashType = "sha256"
 	}
 
 	if *value == "" {
