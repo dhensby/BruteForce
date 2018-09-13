@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/hex"
 	"flag"
 	"fmt"
 	"github.com/ngirot/BruteForce/bruteforce"
@@ -16,6 +17,7 @@ func main() {
 	var dictionary = flag.String("dictionary", "", "The file containing all words to be tested")
 	var hashType = flag.String("type", "sha256", "The hash type")
 	var salt = flag.String("salt", "", "The salt added to the end of the generated word")
+	var test = flag.Bool("test", false, "Test value to use")
 	flag.Parse()
 
 	if *bench {
@@ -35,6 +37,13 @@ func main() {
 	if *value == "" {
 		flag.Usage()
 		os.Exit(1)
+	}
+
+	if *test {
+		var hasherCreator, _ = hashs.HasherCreator(*hashType)
+		var hash = hex.EncodeToString(hasherCreator().Hash(*value))
+		fmt.Printf("Hash: %s \nLength: %d\n", hash, len(hash))
+		os.Exit(0)
 	}
 
 	fmt.Printf("Start brute-forcing (%s)...\n", *hashType)

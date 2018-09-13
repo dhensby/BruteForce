@@ -41,6 +41,7 @@ func buildHasherMap() map[string] func() Hasher{
 	var hasherMap = make(map[string] func() Hasher)
 	hasherMap["sha256"] = func() Hasher {return NewHasherSha256()}
 	hasherMap["md5"] = func() Hasher {return NewHasherMd5()}
+	hasherMap["jd"] = func() Hasher {return NewHasherJd()}
 	hasherMap["sha1"] = func() Hasher {return NewHasherSha1()}
 	hasherMap["sha512"] = func() Hasher {return NewHasherSha512()}
 	return hasherMap
